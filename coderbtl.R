@@ -20,16 +20,21 @@ summary(data)
 data$Patient_Status <- factor(data$Patient_Status, levels = c("Alive", "Dead"))
 
 
+
+
+
+
+
 library(caTools)
 
 set.seed(123)
-split <- sample.split(data$Patient_Status, SplitRatio = 0.6)
+split <- sample.split(7)
 train_set <- subset(data, split == TRUE)
 test_set <- subset(data, split == FALSE)
 
 
 logistic_model <- glm(Patient_Status ~ Age + Protein1 + Protein2 + Protein3 + Protein4,
-                       data = train_set, family = binomial(link = "logit"))
+                       data = train_set, family = "binomial")
 print("Tóm tắt mô hình hồi quy logistic:")
 summary(logistic_model)
 
@@ -87,4 +92,20 @@ print(paste("AUC (Area Under Curve):", round(auc(roc_curve), 4)))
 plot(roc_curve, main = "Đường cong ROC", print.auc = TRUE, col = "blue")
 
 
+# 5.1 tìm khoảng tin cậy
 
+# vẽ qqplot
+qqnorm(data$Age, main = "Normal Q-Q Plot of Age")
+qqline(data$Age)
+
+shapiro.test(data$Age)
+
+# tìm khoảng tin cậy
+n <- length(data$Age)
+xtb = mean(data$Age)
+s = sd(data$Age)
+T_alpha = qt(p = .05/2, df = n - 1, lower.tail = FALSE)
+Epsilon = T_alpha * s / sqrt(n)
+Left_CI = xtb - Epsilon
+Right_CI = xtb + Epsilon
+print(data.frame(n, xtb, s, T_alpha, Left_CI, Right_CI))
