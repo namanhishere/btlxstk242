@@ -20,14 +20,15 @@ numeric_vars <- data %>% select(Age, Protein1, Protein2, Protein3, Protein4)
 
 desc_stats_numeric <- numeric_vars %>%
   summarise(across(everything(),
-                   list(mean   = ~mean(., na.rm = TRUE),
-                        sd     = ~sd(., na.rm = TRUE),
-                        median = ~median(., na.rm = TRUE),
-                        min    = ~min(., na.rm = TRUE),
-                        max    = ~max(., na.rm = TRUE),
-                        Q1     = ~quantile(., 0.25, na.rm = TRUE),
-                        Q3     = ~quantile(., 0.75, na.rm = TRUE)
-                   # Remove na.rm = TRUE here
+                   list(mean   = ~mean(., na.rm = TRUE),       # na.rm bên trong
+                        sd     = ~sd(., na.rm = TRUE),         # na.rm bên trong
+                        median = ~median(., na.rm = TRUE),     # na.rm bên trong
+                        min    = ~min(., na.rm = TRUE),        # na.rm bên trong
+                        max    = ~max(., na.rm = TRUE),        # na.rm bên trong
+                        Q1     = ~quantile(., 0.25, na.rm = TRUE), # na.rm bên trong quantile
+                        Q3     = ~quantile(., 0.75, na.rm = TRUE)  # na.rm bên trong quantile
+                   )
+                   # Bỏ na.rm = TRUE ở đây
   )) %>%
   pivot_longer(everything(), names_to = c("variable", ".value"), names_sep = "_")
 
@@ -39,15 +40,36 @@ print("--- Frequency Tables for Qualitative Variables ---")
 print("Frequency of Patient_Status:")
 print(table(data$Patient_Status))
 
+# Pie chart for Patient_Status
+patient_status_freq <- table(data$Patient_Status)
+pie(patient_status_freq, 
+    main = "Pie Chart of Patient Status", 
+    col = rainbow(length(patient_status_freq)))
+
 print("Frequency of Tumour_Stage:")
 print(table(data$Tumour_Stage))
+
+# Pie chart for Tumour_Stage
+tumour_stage_freq <- table(data$Tumour_Stage)
+pie(tumour_stage_freq, 
+    main = "Pie Chart of Tumour Stage", 
+    col = rainbow(length(tumour_stage_freq)))
 
 print("Frequency of Surgery_type:")
 print(table(data$Surgery_type))
 
+# Pie chart for Surgery_type
+surgery_type_freq <- table(data$Surgery_type)
+pie(surgery_type_freq, 
+    main = "Pie Chart of Surgery Type", 
+    col = rainbow(length(surgery_type_freq)))
 
 
-print("--- Descriptive Statistics by Patient_Status ---")
+
+
+
+
+
 
 # 3.1. Quantitative Variables by Patient_Status
 desc_stats_by_status <- data %>%
